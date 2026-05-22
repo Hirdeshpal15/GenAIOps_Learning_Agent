@@ -1,0 +1,15 @@
+GenAIOps combines AI engineering, MLOps, DevOps, monitoring, evaluations, tracing, and operational lifecycle management.
+
+Core GenAIOps concepts include:
+- prompt versioning
+- automated evaluations
+- monitoring
+- observability
+- telemetry
+- tracing
+- CI/CD automation
+- AI governance
+
+Azure AI Foundry is Microsoft's platform for developing and operating AI systems.
+
+OpenTelemetry is commonly used for tracing and observability in modern cloud systems.

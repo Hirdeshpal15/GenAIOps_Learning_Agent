@@ -1,0 +1,11 @@
+Application Insights is an Azure monitoring service used for collecting telemetry from applications.
+
+Telemetry includes:
+- logs
+- metrics
+- traces
+- failures
+- latency
+- request statistics
+
+OpenTelemetry is often integrated with Application Insights to support distributed tracing and observability.

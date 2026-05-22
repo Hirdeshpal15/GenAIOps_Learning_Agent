@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+env/
+
+# Environment variables
+.env
+
+# Logs
+logs/
+
+# VS Code
+.vscode/
+
+# Mac
+.DS_Store
+
+# Azure Developer CLI
+.azure/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Testing
+.pytest_cache/
+
+# Coverage
+.coverage
+htmlcov/
