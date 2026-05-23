@@ -1,0 +1,48 @@
+name: Infrastructure Validation
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  validate-infrastructure:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set Up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Python Dependencies
+        run: |
+          python -m pip install --upgrade pip
+
+      - name: Validate Bicep File Exists
+        run: |
+          if [ ! -f infra/main.bicep ]; then
+            echo "Bicep file missing!"
+            exit 1
+          fi
+
+      - name: Validate Prompt Folder
+        run: |
+          if [ ! -d prompts ]; then
+            echo "Prompts folder missing!"
+            exit 1
+          fi
+
+      - name: Validate Evaluation Folder
+        run: |
+          if [ ! -d evaluations ]; then
+            echo "Evaluations folder missing!"
+            exit 1
+          fi
+
+      - name: Success Message
+        run: |
+          echo "Infrastructure validation successful!"

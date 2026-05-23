@@ -1,0 +1,25 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
+
+# name: my-genaiops-agent
+# metadata:
+#     template: azd-init@1.25.0
+# services:
+#     my-genaiops-agent:
+#         project: .
+#         host: containerapp
+#         language: python
+# resources:
+#     my-genaiops-agent:
+#         type: host.containerapp
+#         port: 80
+
+# project manages infrastructure only using Bicep instead of Deploy a Python service to Azure Container Apps
+
+name: genaiops-learning-agent
+
+metadata:
+  template: custom-genaiops-template
+
+infra:
+  provider: bicep
+  path: infra
