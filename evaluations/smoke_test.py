@@ -18,6 +18,9 @@ client = AzureOpenAI(
 
 print("Running AI smoke test...")
 
+print("Endpoint:", endpoint)
+print("Deployment:", deployment)
+
 response = client.chat.completions.create(
     model=deployment,
     messages=[

@@ -46,6 +46,14 @@ jobs:
         run: |
           pip install openai python-dotenv
 
+      - name: Debug Environment Variables
+        run: |
+          echo "Endpoint exists:"
+          echo "${{ secrets.AZURE_OPENAI_ENDPOINT }}"
+
+          echo "Deployment exists:"
+          echo "${{ secrets.AZURE_OPENAI_DEPLOYMENT }}"
+
       - name: Run AI Smoke Test
         env:
           AZURE_OPENAI_API_KEY: ${{ secrets.AZURE_OPENAI_API_KEY }}
