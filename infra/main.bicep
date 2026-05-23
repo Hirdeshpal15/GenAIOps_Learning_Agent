@@ -28,3 +28,27 @@ resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
 }
 
 output applicationInsightsConnectionString string = appInsights.properties.ConnectionString
+
+@description('Key Vault name')
+param keyVaultName string = 'genaiopskv${uniqueString(resourceGroup().id)}'
+
+resource keyVault 'Microsoft.KeyVault/vaults@2023-02-01' = {
+  name: keyVaultName
+  location: location
+  properties: {
+    tenantId: subscription().tenantId
+
+    sku: {
+      family: 'A'
+      name: 'standard'
+    }
+
+    enableRbacAuthorization: true
+
+    accessPolicies: []
+
+    publicNetworkAccess: 'Enabled'
+  }
+}
+
+output keyVaultName string = keyVault.name
