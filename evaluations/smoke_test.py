@@ -37,4 +37,5 @@ print(reply)
 if not reply or len(reply) < 2:
     raise Exception("Smoke test failed!")
 
-print("Smoke test passed!")
+
+print("Smoke test passed with new Azure OpenAI configuration!")
