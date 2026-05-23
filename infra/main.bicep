@@ -17,3 +17,14 @@ resource openAI 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
 }
 
 output openAIEndpoint string = openAI.properties.endpoint
+
+resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
+  name: 'genaiops-appinsights'
+  location: location
+  kind: 'web'
+  properties: {
+    Application_Type: 'web'
+  }
+}
+
+output applicationInsightsConnectionString string = appInsights.properties.ConnectionString
