@@ -42,6 +42,17 @@ jobs:
             echo "Evaluations folder missing!"
             exit 1
           fi
+      - name: Install Project Dependencies
+        run: |
+          pip install openai python-dotenv
+
+      - name: Run AI Smoke Test
+        env:
+          AZURE_OPENAI_API_KEY: ${{ secrets.AZURE_OPENAI_API_KEY }}
+          AZURE_OPENAI_ENDPOINT: ${{ secrets.AZURE_OPENAI_ENDPOINT }}
+          AZURE_OPENAI_DEPLOYMENT: ${{ secrets.AZURE_OPENAI_DEPLOYMENT }}
+        run: |
+          python evaluations/smoke_test.py
 
       - name: Success Message
         run: |
