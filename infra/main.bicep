@@ -29,6 +29,21 @@ resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
 
 output applicationInsightsConnectionString string = appInsights.properties.ConnectionString
 
+resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
+  name: 'genaiops-loganalytics'
+  location: location
+
+  properties: {
+    sku: {
+      name: 'PerGB2018'
+    }
+
+    retentionInDays: 30
+  }
+}
+
+output logAnalyticsWorkspaceId string = logAnalytics.id
+
 @description('Key Vault name')
 param keyVaultName string = 'genaiopskv${uniqueString(resourceGroup().id)}'
 
@@ -78,3 +93,118 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-
 }
 
 output managedIdentityPrincipalId string = managedIdentity.properties.principalId
+
+@description('Azure Container Registry name')
+param acrName string = 'genaiopsacr${uniqueString(resourceGroup().id)}'
+
+resource acr 'Microsoft.ContainerRegistry/registries@2023-07-01' = {
+  name: acrName
+  location: location
+
+  sku: {
+    name: 'Basic'
+  }
+
+  properties: {
+    adminUserEnabled: true
+  }
+}
+
+output acrLoginServer string = acr.properties.loginServer
+
+resource containerEnv 'Microsoft.App/managedEnvironments@2023-05-01' = {
+  name: 'genaiops-container-env'
+
+  location: location
+
+  properties: {
+    appLogsConfiguration: {
+      destination: 'log-analytics'
+
+      logAnalyticsConfiguration: {
+        customerId: logAnalytics.properties.customerId
+
+        sharedKey: listKeys(logAnalytics.id, '2022-10-01').primarySharedKey
+      }
+    }
+  }
+}
+
+resource containerApp 'Microsoft.App/containerApps@2023-05-01' = {
+  name: 'genaiops-api'
+
+  location: location
+
+  identity: {
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${managedIdentity.id}': {}
+    }
+  }
+
+  properties: {
+    managedEnvironmentId: containerEnv.id
+
+    configuration: {
+      ingress: {
+        external: true
+        targetPort: 8000
+      }
+
+      registries: [
+        {
+          server: acr.properties.loginServer
+          username: acr.listCredentials().username
+          passwordSecretRef: 'acr-password'
+        }
+      ]
+
+      secrets: [
+        {
+          name: 'acr-password'
+          value: acr.listCredentials().passwords[0].value
+        }
+      ]
+    }
+
+    template: {
+      containers: [
+        {
+          name: 'genaiops-api'
+
+          image: 'genaiopsacrgl362bkpewhfs.azurecr.io/genaiops-api:v1'
+
+          env: [
+            {
+              name: 'AZURE_OPENAI_ENDPOINT'
+              value: 'AZURE_OPENAI_ENDPOINT'
+            }
+            {
+              name: 'AZURE_OPENAI_API_KEY'
+              value: 'AZURE_OPENAI_API_KEY'
+            }
+            {
+              name: 'AZURE_OPENAI_DEPLOYMENT'
+              value: 'AZURE_OPENAI_DEPLOYMENT'
+            }
+            {
+              name: 'AZURE_SEARCH_SERVICE'
+              value: 'AZURE_SEARCH_SERVICE'
+            }
+            {
+              name: 'AZURE_SEARCH_KEY'
+              value: 'AZURE_SEARCH_KEY'
+            }
+          ]
+
+          resources: {
+            cpu: json('0.5')
+            memory: '1Gi'
+          }
+        }
+      ]
+    }
+  }
+}
+
+output containerAppUrl string = containerApp.properties.configuration.ingress.fqdn

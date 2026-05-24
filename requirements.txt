@@ -1,2 +1,11 @@
 openai
 python-dotenv
+fastapi
+uvicorn
+openai
+python-dotenv
+azure-search-documents
+azure-identity
+azure-keyvault-secrets
+azure-monitor-opentelemetry
+opentelemetry-api
