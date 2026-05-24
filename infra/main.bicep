@@ -52,3 +52,29 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-02-01' = {
 }
 
 output keyVaultName string = keyVault.name
+
+@description('Azure AI Search service name')
+param searchServiceName string = 'genaiopssearch${uniqueString(resourceGroup().id)}'
+
+resource searchService 'Microsoft.Search/searchServices@2023-11-01' = {
+  name: searchServiceName
+  location: location
+  sku: {
+    name: 'basic'
+  }
+  properties: {
+    replicaCount: 1
+    partitionCount: 1
+    hostingMode: 'default'
+    publicNetworkAccess: 'enabled'
+  }
+}
+
+output searchServiceName string = searchService.name
+
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
+  name: 'genaiops-managed-identity'
+  location: location
+}
+
+output managedIdentityPrincipalId string = managedIdentity.properties.principalId
