@@ -90,24 +90,51 @@ Managed Identity → Secure Authentication
 
 ---
 
-# Project Structure
+# Project Folder Structure
 
 ```text
 my-genaiops-agent/
 │
-├── api/
 ├── agents/
+│   ├── assistant_v1.py
+│   ├── assistant_v4.py
+│   └── assistant_v9.py
+│
 ├── prompts/
-├── traces/
+│   ├── system_prompt_v1.txt
+│   ├── system_prompt_v2.txt
+│   └── system_prompt_v3.txt
+│
 ├── evaluations/
+│   ├── smoke_test.py
+│   └── evaluation scripts
+│
+├── traces/
+│   ├── trace_demo.py
+│   └── azure_trace_demo.py
+│
 ├── tools/
+│   ├── memory.py
+│   ├── logger.py
+│   ├── keyvault_demo.py
+│   └── azure_search_retriever.py
+│
 ├── scripts/
+│   ├── prompt_loader.py
+│   ├── create_search_index.py
+│   ├── upload_documents.py
+│   └── query_search.py
+│
 ├── infra/
-├── .github/workflows/
-├── Dockerfile
+│   └── main.bicep
+│
+├── .github/
+│   └── workflows/
+│       └── infra-validation.yml
+│
 ├── azure.yaml
 ├── requirements.txt
-└── README.md
+└── .env
 ```
 
 ---
